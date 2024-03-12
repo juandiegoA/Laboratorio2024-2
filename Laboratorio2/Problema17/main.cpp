@@ -32,12 +32,6 @@ int main()
 //Codigo Arduino
 //---------------------------------------------------------------------------------------------------------------------------
 /*
-int rei, rej, n, fsum;
-void setup()
-{
-  Serial.begin(9600);
-}
-
 int divisores(int x){
     int sum = 0;
     for(int l=1; l<= x/2; l++){
@@ -48,10 +42,18 @@ int divisores(int x){
     return sum;
 }
 
-void loop()
+void setup()
 {
+  Serial.begin(9600);
+  while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB port only
+  }
+  int rei, rej, n, fsum;
   Serial.println("Ingrese el numero tope: ");
-  n=Serial.read();
+  while (!Serial.available()) {
+    ; // wait for user input
+  }
+  n = Serial.parseInt();
   fsum = 0;
   for(int i=2; i<=n; i++){
       rei = divisores(i);
@@ -62,8 +64,11 @@ void loop()
           }
       }
   }
-  Serial.print("El resultasdo de la suma es: ");
+  Serial.print("El resultado de la suma es: ");
   Serial.println(fsum);
-  delay(10000);
+}
+
+void loop() {
+  // Empty loop
 }
 */
