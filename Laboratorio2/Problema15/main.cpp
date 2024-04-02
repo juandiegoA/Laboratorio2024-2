@@ -4,15 +4,15 @@ using namespace std;
 bool checkIntersection(int a[], int b[]) {
     int x1 = a[0], y1 = a[1], w1 = a[2], h1 = a[3];
     int x2 = b[0], y2 = b[1], w2 = b[2], h2 = b[3];
-    // Check if any of the coordinates are negative
+    // Revisa si las coordenadas son negativas
     if (x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0) {
-        return true; // Coordinates are negative
+        return true; // Coordenadas negativas
     }
-    // Check if the squares intersect
+    // Revision de la interseccion de los cuadrados
     if (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2) {
-        return true; // Squares intersect
+        return true; // Se intersectan
     }
-    return false; // Squares do not intersect
+    return false; // Los Cuadrados no se intersectan
 }
 int main(){
     cout<<"ingrese un cuadrado: ";
