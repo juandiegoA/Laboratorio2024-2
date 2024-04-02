@@ -4,12 +4,10 @@ using namespace std;
 bool checkIntersection(int a[], int b[]) {
     int x1 = a[0], y1 = a[1], w1 = a[2], h1 = a[3];
     int x2 = b[0], y2 = b[1], w2 = b[2], h2 = b[3];
-
     //Revisar si los cuadrados se intersectan
     if (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2) {
         return true; //Se intersectan
     }
-
     return false; // No se intersectan
 }
 
