@@ -216,10 +216,13 @@ int main() {
                     cout << "Ingrese la clave del usuario: " << endl;
                     cin >> clave_;
                     clave_="cl"+clave_;
-                    cout << "Ingrese el saldo del usuario: "<< endl;
+                    cout << "Ingrese el saldo del usuario: " << endl;
                     cin >> saldo_;
-                    long long int saldoInt = stoi(saldo_.substr(2)); // Convertir a entero y eliminar "sa"
-                    if (saldoInt > 10000000) {
+                    int saldoInt = stoi(saldo_.substr(2)); // Convertir a entero y eliminar "sa"
+                    if (saldoInt < 0 || saldoInt > 1000000000) { // Límite de 1 billón
+                        cout << "Monto invalido. Por favor, ingrese una cantidad entre 0 y 1,000,000,000." << endl;
+                        saldo_ = "sa0"; // Asignar 0 como saldo
+                    } else if (saldoInt > 10000000) {
                         cout << "El saldo máximo permitido es de 10 millones." << endl;
                                 saldo_ = "sa10000000"; // Asignar el máximo permitido
                     } else {
@@ -275,9 +278,22 @@ int main() {
                                 cout << "Este proceso cuesta 1000, desea continuar? [y/n]" << endl;
                                 cin >> respU;
                                 if (respU == 'y') {
-                                    long long int retiro = 0;
+                                    string retiroStr;
+                                    int retiro = 0;
                                     cout << "Cuanto desea retirar: " << endl;
-                                    cin >> retiro;
+                                    cin >> retiroStr;
+
+                                    // Validar la entrada
+                                    try {
+                                        retiro = stoi(retiroStr);
+                                        if (retiro < 0 || retiro > 1000000000) { // Límite de 1 billón
+                                            throw invalid_argument("Monto invalido. Por favor, ingrese una cantidad entre 0 y 1,000,000,000.");
+                                        }
+                                    } catch (const invalid_argument& e) {
+                                        cout << e.what() << endl;
+                                        break;
+                                    }
+
                                     if (retiro > saldo) {
                                         cout << "No tiene saldo suficiente para retirar esa cantidad." << endl;
                                     } else {
