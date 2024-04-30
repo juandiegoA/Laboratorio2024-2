@@ -1,8 +1,9 @@
 #include <iostream>
-#include<fstream>
-#include<math.h>
-#include<string>
-#include<cstdlib>
+#include <fstream>
+#include <math.h>
+#include <string>
+#include <cstdlib>
+#include <limits>
 #include "Archivos.cpp"
 #include "Codificacion.cpp"
 #include "Decodificacion.cpp"
@@ -160,141 +161,162 @@ void actualizarDatosUsuario(string userIn, int cant){
     escrituraArchivo(dataSalida,"Usuarios");
 }
 
-int main(){
-
-    int opcion=0;
+int main() {
+    int opcion = 0;
     string user;
     string contra;
     string cedu_;
     string clave_;
     string saldo_;
 
-    int cantUsuarios=stoi(lecturaArchivo("cantUsers"));
+    int cantUsuarios = stoi(lecturaArchivo("cantUsers"));
 
-    cout <<"///-----Bienvenido al cajero-----///"<<endl;
-    while(opcion!=3){
+    cout << "///-----Bienvenido al cajero-----///" << endl;
+    while (opcion != 3) {
+        cout << "-----MENU----- " << endl;
+        cout << "Desea ingresar como: \n1. Administrador \n2. Usuario \n3. Salir" << endl;
+        cout << "Ingrese una opcion: ";
 
-        cout<<"-----MENU----- "<< endl;
-        cout <<"Desea ingresar como: \n1.Administrador \n2.Usuario \n3.Salir"<<endl;
-        cin >> opcion;
-        if (opcion != 1 || opcion != 2 || opcion != 3){
-            cout<<"opcion invalida"<<endl;
-                break;
-        }
-        bool verificar=false;
-        switch(opcion){
-        case 1:
-            cout<<"Ingrese Usuario Adminsitrador:"<<endl;
-            cin>>user;
-            cout<<"Ingrese Contraseña:"<<endl;
-                        cin>>contra;
+        try {
+            cin >> opcion;
 
-            verificar=VerificarAdmin(user, contra);
-
-            if(verificar){
-                cout<<"=====Autenticacion Valida===="<<endl;
-                string datain="";
-                int rep=0;
-                cout<<"|||-------ADMINISTRADOR-------|||"<<endl;
-                cout << "|||-------registro de usuarios-------|||"<<endl;
-
-                cout << "Ingrese la cedula del usuario: "<< endl;
-                cin >> cedu_;
-                cedu_="cc"+cedu_;
-                cout << "Ingrese la clave del usuario: " << endl;
-                cin >> clave_;
-                clave_="cl"+clave_;
-                cout << "Ingrese el saldo del usuario: "<< endl;
-                cin >> saldo_;
-                saldo_="sa"+saldo_;
-                string dataincod=cedu_+clave_+saldo_;
-                //cout<<"sincod: "+dataincod<<endl;
-
-                datain=codificacionpalabra1(dataincod,4);
-
-                string dataInmod=lecturaArchivo("Usuarios");
-                cantUsuarios+=1;
-                escrituraArchivo(to_string(cantUsuarios),"cantUsers");
-
-                dataInmod+=","+datain;
-                //cout<<dataInmod<<endl;
-                escrituraArchivo(dataInmod,"Usuarios");
-
-            }else{
-                cout<<"Datos Incorrectos"<<endl;
+            // Verificar si la entrada es un número válido
+            if (cin.fail()) {
+                throw runtime_error("Entrada inválida. Ingrese un número.");
             }
 
-            break;
-        case 2:
-            if(cantUsuarios>0){
-                cout<<"Ingrese Usuario:"<<endl;
+            // Limpiar el buffer de entrada
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            // Verificar si la opción está dentro del rango válido
+            if (opcion < 1 || opcion > 3) {
+                throw runtime_error("Opción inválida. Ingrese un número entre 1 y 3.");
+            }
+
+            bool verificar = false;
+            switch (opcion) {
+                case 1:
+                cout<<"Ingrese Usuario Adminsitrador:"<<endl;
                 cin>>user;
                 cout<<"Ingrese Contraseña:"<<endl;
                             cin>>contra;
-                verificar=VerificarUsuario(user, contra, cantUsuarios);
+
+                verificar=VerificarAdmin(user, contra);
 
                 if(verificar){
-                    int menuU=0;
-                    while(menuU!=3){
+                    cout<<"=====Autenticacion Valida===="<<endl;
+                    string datain="";
+                    int rep=0;
+                    cout<<"|||-------ADMINISTRADOR-------|||"<<endl;
+                    cout << "|||-------registro de usuarios-------|||"<<endl;
 
-                        cout<<"|||--------MENU USUARIO--------|||"<<endl;
-                        cout<<"1. Consultar Saldo"<<endl;
-                        cout<<"2. Retirar Dinero"<<endl;
-                        cout<<"3. Salir"<<endl;
-                        cin>>menuU;
+                    cout << "Ingrese la cedula del usuario: "<< endl;
+                    cin >> cedu_;
+                    cedu_="cc"+cedu_;
+                    cout << "Ingrese la clave del usuario: " << endl;
+                    cin >> clave_;
+                    clave_="cl"+clave_;
+                    cout << "Ingrese el saldo del usuario: "<< endl;
+                    cin >> saldo_;
+                    long long int saldoInt = stoi(saldo_.substr(2)); // Convertir a entero y eliminar "sa"
+                    if (saldoInt > 10000000) {
+                        cout << "El saldo máximo permitido es de 10 millones." << endl;
+                                saldo_ = "sa10000000"; // Asignar el máximo permitido
+                    } else {
+                        saldo_ = "sa" + saldo_;
+                    }
+                    string dataincod=cedu_+clave_+saldo_;
+                    //cout<<"sincod: "+dataincod<<endl;
 
-                        char respU;
-                        switch(menuU){
-                        case 1:
-                            cout<<"Este proceso cuesta 1000, desea continuar? [y/n]"<<endl;
-                            cin>>respU;
-                            if(respU=='y'){
-                                saldo-=1000;
-                                cout<<"Su saldo actual es: "<<saldo<<endl;
-                                actualizarDatosUsuario(cedu, cantUsuarios);
+                    datain=codificacionpalabra1(dataincod,4);
+
+                    string dataInmod=lecturaArchivo("Usuarios");
+                    cantUsuarios+=1;
+                    escrituraArchivo(to_string(cantUsuarios),"cantUsers");
+
+                    dataInmod+=","+datain;
+                    //cout<<dataInmod<<endl;
+                    escrituraArchivo(dataInmod,"Usuarios");
+
+                }else{
+                    cout<<"Datos Incorrectos"<<endl;
+                }
+                break;
+                case 2:
+                if(cantUsuarios>0){
+                    cout<<"Ingrese Usuario:"<<endl;
+                    cin>>user;
+                    cout<<"Ingrese Contraseña:"<<endl;
+                                cin>>contra;
+                    verificar=VerificarUsuario(user, contra, cantUsuarios);
+
+                    if(verificar){
+                        int menuU=0;
+                        while(menuU!=3){
+
+                            cout<<"|||--------MENU USUARIO--------|||"<<endl;
+                            cout<<"1. Consultar Saldo"<<endl;
+                            cout<<"2. Retirar Dinero"<<endl;
+                            cout<<"3. Salir"<<endl;
+                            cin>>menuU;
+
+                            char respU;
+                            switch(menuU){
+                            case 1:
+                                cout<<"Este proceso cuesta 1000, desea continuar? [y/n]"<<endl;
+                                cin>>respU;
+                                if(respU=='y'){
+                                    saldo-=1000;
+                                    cout<<"Su saldo actual es: "<<saldo<<endl;
+                                    actualizarDatosUsuario(cedu, cantUsuarios);
+                                }
+                                break;
+                            case 2:
+                                cout << "Este proceso cuesta 1000, desea continuar? [y/n]" << endl;
+                                cin >> respU;
+                                if (respU == 'y') {
+                                    long long int retiro = 0;
+                                    cout << "Cuanto desea retirar: " << endl;
+                                    cin >> retiro;
+                                    if (retiro > saldo) {
+                                        cout << "No tiene saldo suficiente para retirar esa cantidad." << endl;
+                                    } else {
+                                        saldo -= retiro;
+                                        saldo -= 1000;
+                                        cout << "Su saldo actual es: " << saldo << endl;
+                                        actualizarDatosUsuario(cedu, cantUsuarios);
+                                    }
+                                }
+                                break;
+                            case 3:
+                                cout<<"Retorno menu principal"<<endl;
+                                break;
+                            default:
+                                cout<<"Esa opcion no existe"<<endl;
+                                break;
                             }
-                            break;
-                        case 2:
-                            cout<<"Este proceso cuesta 1000, desea continuar? [y/n]"<<endl;
-                            cin>>respU;
-                            if(respU=='y'){
-
-                                int retiro=0;
-                                cout<<"Cuanto desea retirar: "<<endl;
-                                cin>>retiro;
-                                saldo-=retiro;
-                                saldo-=1000;
-                                cout<<"Su saldo actual es: "<<saldo<<endl;
-
-                                actualizarDatosUsuario(cedu, cantUsuarios);
-
-                            }
-
-                            break;
-                        case 3:
-                            cout<<"Retorno menu principal"<<endl;
-                            break;
-                        default:
-                            cout<<"Esa opcion no existe"<<endl;
-                            break;
                         }
                     }
+
+                }else{
+                    cout<<"No hay usuarios registrados"<<endl;
                 }
 
-            }else{
-                cout<<"No hay usuarios registrados"<<endl;
+                break;
+                case 3:
+                    cout << "Fin del programa" << endl;
+                    break;
+                default:
+                    cout << "Esa opcion no existe" << endl;
+                    break;
             }
+        } catch (const runtime_error& e) {
+            cout << "Error: " << e.what() << endl;
 
-            break;
-        case 3:
-            cout<<"Fin del programa"<<endl;
-            break;
-        default:
-            cout<<"Esa opcion no existe"<<endl;
-            break;
-
+            // Limpiar el buffer de entrada en caso de entrada inválida
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
-
     }
 
     return 0;
