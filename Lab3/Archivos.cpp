@@ -9,15 +9,15 @@ using namespace std;
 void escrituraArchivo(string data, string name){
     ofstream outfile;
     cout<<name;
-    string filePath = "C:/Users/Est01/Documents/Lab3/Data/Sudo.txt";
+    string filePath = "C:/Users/Est01/Documents/Laboratorio3/Data/"+name+".txt";
     outfile.open(filePath);
-
+    //cout<<"Entro a escritura de archivo";
     if (!outfile.is_open())
     {
         cout << "Error abriendo el archivo" << endl;
         exit(1);
     }
-//file:///C:/Users/Est01/Documents/Lab3/Data/Sudo.txt
+    //file:///C:/Users/Est01/Documents/Lab3/Data/Sudo.txt
     outfile << data+"_" << endl;
     outfile.close();
 }
@@ -26,8 +26,9 @@ string lecturaArchivo(string name){
     string data;
     string dataSalida="";
     ifstream infile;
-    string filePath = "C:/Users/Est01/Documents/Lab3/Data/" + name + ".txt";
+    string filePath = "C:/Users/Est01/Documents/Laboratorio3/Data/" + name + ".txt";
     infile.open(filePath);
+    //cout<<"Entro a lectura de archivo";
     if (!infile.is_open())
     {
         cout << "Error abriendo el archivo" << endl;
